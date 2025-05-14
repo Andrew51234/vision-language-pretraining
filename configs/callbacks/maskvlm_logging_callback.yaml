@@ -1,0 +1,3 @@
+maskvlm_logging_callback:
+  _target_: src.callbacks.maskvlm_logging_callback.MaskVLMLoggingCallback
+  text_model_name: ${datamodule.text_model_name}

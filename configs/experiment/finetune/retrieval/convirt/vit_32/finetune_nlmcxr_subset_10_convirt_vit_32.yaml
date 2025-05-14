@@ -1,0 +1,41 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+# defaults copied from pretraining.yaml and overridden here
+defaults:
+  - override /datamodule: nlmcxr.yaml
+  - override /model: nlmcxr_finetune_vit_model.yaml
+  - override /callbacks: nlmcxr_finetune_callbacks.yaml
+  - override /logger: wandb
+  - override /trainer: nlmcxr_finetune_trainer.yaml
+  - override /paths: nlmcxr_finetune_paths.yaml
+  - override /hydra: default.yaml
+  - override /extras: default.yaml
+  - override /debug: null
+
+task_name: "nlmcxr_subset_10_finetune_convirt_vit_32"
+train: True
+test: False
+seed: 42
+
+datamodule: 
+  subset_percentage: 0.1 # 10% of the data
+
+logger:
+  wandb:
+    project: "finetuning_retrieval"
+    entity: "adlm-vision-language"
+    name: "nlmcxr_subset_10_finetune_convirt_vit_32"
+    tags:
+      - "finetuning"
+      - "nlmcxr"
+      - "subset_10"
+      - "convirt_vit_32"
+      # - "test"
+    notes: "Convirt NLMCXR finetuning with default configuration"
+
+# trainer:
+#   max_epochs: 10
+#   val_check_interval: 1000

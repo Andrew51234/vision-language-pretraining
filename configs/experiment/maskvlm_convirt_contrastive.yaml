@@ -1,0 +1,35 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: mimic_cxr_mvlm.yaml
+  - override /model: mvlm_model.yaml
+  - override /callbacks: maskvlm_pretrain_callbacks.yaml
+  - override /trainer: maskvlm_pretrain_trainer.yaml
+  - override /paths: default.yaml
+
+task_name: "maskvlm_convirt_contrastive"
+train: True
+test: False
+seed: 42
+
+logger:
+  wandb:
+    project: "pretraining"
+    entity: "adlm-vision-language"
+    name: ${task_name}
+    tags:
+      - "pretraining"
+      - "mimic_cxr"
+      - "convirt_contrastive"
+      # - "test"
+      - "maskvlm"
+    notes: "Maskvlm pretraining with contrastive loss from Convirt"
+
+model:
+  itc_loss: # use this if you want to use the contrasitve loss of ConVIRT
+    _target_: src.models.criterion.ConVIRTContrastiveCriterion
+    temperature: 0.1
+    lamda: 0.75

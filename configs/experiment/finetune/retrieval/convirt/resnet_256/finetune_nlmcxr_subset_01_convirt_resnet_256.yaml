@@ -1,0 +1,45 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+# defaults copied from pretraining.yaml and overridden here
+defaults:
+  - override /datamodule: nlmcxr.yaml
+  - override /model: nlmcxr_finetune_model.yaml
+  - override /callbacks: nlmcxr_finetune_callbacks.yaml
+  - override /logger: wandb
+  - override /trainer: nlmcxr_finetune_trainer.yaml
+  - override /paths: nlmcxr_finetune_paths.yaml
+  - override /hydra: default.yaml
+  - override /extras: default.yaml
+  - override /debug: null
+
+task_name: "nlmcxr_subset_01_finetune_convirt_resnet_256"
+train: True
+test: False
+seed: 42
+
+model:
+  model:
+    checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_resnet_256/checkpoints/epoch_100.ckpt'
+
+datamodule: 
+  subset_percentage: 0.01 # 1% of the data
+
+logger:
+  wandb:
+    project: "finetuning_retrieval"
+    entity: "adlm-vision-language"
+    name: "nlmcxr_subset_01_finetune_convirt_resnet_256"
+    tags:
+      - "finetuning"
+      - "nlmcxr"
+      - "subset_01"
+      - "convirt_resnet_256"
+      # - "test"
+    notes: "Convirt NLMCXR finetuning with default configuration"
+
+# trainer:
+#   max_epochs: 10
+#   val_check_interval: 1000

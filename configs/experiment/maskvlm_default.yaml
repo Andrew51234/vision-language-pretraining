@@ -1,0 +1,30 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: mimic_cxr_mvlm.yaml
+  - override /model: mvlm_model.yaml
+  - override /callbacks: maskvlm_pretrain_callbacks.yaml
+  - override /trainer: maskvlm_pretrain_trainer.yaml
+  - override /paths: default.yaml
+
+task_name: "maskvlm_default"
+train: True
+test: False
+seed: 42
+
+logger:
+  wandb:
+    project: "pretraining"
+    entity: "adlm-vision-language"
+    name: ${task_name}
+    tags:
+      - "pretraining"
+      - "mimic_cxr"
+      - "default"
+      # - "test"
+      - "maskvlm"
+    notes: "Maskvlm pretraining with default settings"
+  

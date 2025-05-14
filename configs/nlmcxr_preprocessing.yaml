@@ -1,0 +1,35 @@
+paths:
+  # Base directory for the NLMCXR dataset
+  nlmcxr_dir: "/vol/aimspace/projects/practical_WS2425/vision_language/data/nlmcxr"
+    
+  # Output directory for processed data
+  output_dir: "/vol/aimspace/projects/practical_WS2425/vision_language/data/interims"
+  
+  # Directory for Stanza resources
+  stanza_dir: "/vol/aimspace/projects/practical_WS2425/vision_language/stanza_resources"
+
+preprocessing:
+  # Image resizing parameters
+  resize_shape: 512
+  
+  
+  # Text processing parameters
+  min_sentence_words: 3
+
+parallel:
+  # Pandarallel settings
+  progress_bar: true
+  n_workers: 24  # Based on the notebook output showing 24 workers
+
+nlp:
+  # Stanza settings
+  language: "en"
+  processors: "tokenize"
+
+# Fields to process
+fields:
+  - "Comparison"
+  - "Indication"
+  - "Findings"
+  - "Impression"
+  - "Image_Caption"

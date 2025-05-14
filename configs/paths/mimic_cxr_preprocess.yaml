@@ -1,0 +1,6 @@
+
+  mimic_cxr_jpg: /vol/miltank/projects/physionet/mimic_cxr/mimic-cxr-jpg_2-0-0
+  mimic_cxr_reports: /vol/miltank/projects/physionet/mimic_cxr/mimic-cxr_2-0-0
+  project_dir: /vol/miltank/projects/practical_WS2425/vision_language
+  stanza_dir: ${paths.project_dir}/stanza_resources
+  output_dir: ${paths.project_dir}/data/mimic_cxr_resized

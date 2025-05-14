@@ -1,0 +1,60 @@
+# Default ConVIRT ResNet (batch size 32)
+_target_: src.models.convirt_model.ConVIRT
+image_model:
+  _target_: src.models.image_encoder.ImageEncoder
+  name: resnet50
+image_projector:
+  _target_: src.models.projection.Projector
+  in_dim: 2048           
+  hidden_size: 1024       
+  out_dim: 512   
+text_model:
+  _target_: torch.nn.Identity
+text_projector:
+  _target_: torch.nn.Identity
+
+
+# Alternative configurations:
+
+# ConVIRT ViT (batch size 32)
+# convirt_vit_32:
+#   _target_: src.models.convirt_model.ConVIRT
+#   image_model:
+#     _target_: src.models.image_encoder.VitImageEncoder
+#     name: "google/vit-base-patch16-224"
+#   image_projector:
+#     _target_: src.models.projection.Projector
+#     in_dim: 768
+#     hidden_size: 1024       
+#     out_dim: 512 
+#   text_model:
+#     _target_: torch.nn.Identity
+#   text_projector:
+#     _target_: torch.nn.Identity
+#   checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_vit_32/checkpoints/last.ckpt'
+
+# ImageNet pretrained ResNet
+# imagenet_resnet:
+#   _target_: src.models.image_encoder.ImageEncoder
+#   name: resnet50
+#   frozen: false
+#   weights: "IMAGENET1K_V1"  # This is torchvision's way to specify ImageNet pretrained weights
+#   return_interm_layers: false 
+#   checkpoint_path: null
+
+# ConVIRT ResNet (batch size 128)
+# convirt_resnet_128:
+#   _target_: src.models.convirt_model.ConVIRT
+#   image_model:
+#     _target_: src.models.image_encoder.ImageEncoder
+#     name: resnet50
+#   image_projector:
+#     _target_: src.models.projection.Projector
+#     in_dim: 2048           
+#     hidden_size: 1024       
+#     out_dim: 512   
+#   text_model:
+#     _target_: torch.nn.Identity
+#   text_projector:
+#     _target_: torch.nn.Identity
+#   checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_resnet_128/checkpoints/last.ckpt'

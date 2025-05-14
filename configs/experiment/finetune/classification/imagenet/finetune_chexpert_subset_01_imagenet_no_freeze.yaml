@@ -1,0 +1,47 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+# defaults copied from pretraining.yaml and overridden here
+defaults:
+  - override /datamodule: chexpert.yaml
+  - override /model: chexpert_finetune_model.yaml
+  - override /callbacks: chexpert_finetune_callbacks.yaml
+  - override /logger: wandb
+  - override /trainer: chexpert_finetune_trainer.yaml
+  - override /paths: chexpert_finetune_paths.yaml
+  - override /hydra: default.yaml
+  - override /extras: default.yaml
+  - override /debug: null
+
+task_name: "chexpert_subset_01_finetune_default_no_freeze"
+train: True
+test: False
+seed: 42
+
+datamodule: 
+  subset_percentage: 0.01 # 1% of the data
+
+model:
+  model:
+    freeze_backbone: False
+
+logger:
+  wandb:
+    project: "finetuning"
+    entity: "adlm-vision-language"
+    name: "chexpert_subset_01_finetune_default_no_freeze"
+    tags:
+      - "finetuning"
+      - "chexpert"
+      - "subset_01"
+      - "default"
+      # - "test"
+      - "baseline"
+      - "no_freeze"
+    notes: "Baseline CheXpert finetuning with default configuration"
+
+# trainer:
+#   max_epochs: 10
+#   val_check_interval: 1000

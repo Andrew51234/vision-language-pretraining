@@ -1,0 +1,52 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: mimic_cxr_mvlm.yaml
+  - override /model: mvlm_model.yaml
+  - override /callbacks: maskvlm_pretrain_callbacks.yaml
+  - override /trainer: maskvlm_pretrain_trainer.yaml
+  - override /paths: default.yaml
+
+task_name: "maskvlm_optimized"
+train: True
+test: False
+seed: 42
+
+logger:
+  wandb:
+    project: "pretraining"
+    entity: "adlm-vision-language"
+    name: ${task_name}
+    tags:
+      - "pretraining"
+      - "mimic_cxr"
+      # - "default"
+      - "experiment"
+      - "maskvlm"
+    notes: "Maskvlm pretraining with different modifications"
+
+model:
+#   loss_weight_itc: 1.0
+#   loss_weight_itm: 1.0
+#   loss_weight_mlm: 0.5
+#   loss_weight_mim: 0.5
+  net:
+    text_model:
+      num_layers_to_freeze: 6
+
+trainer:
+  val_check_interval: .5
+
+datamodule:
+  # train_val_split: [-1, 5000]
+  n_sentences: 3
+  batch_size: 64
+  # img_mask_transform:
+  #   patch_size: 32
+  #   mask_ratio: 0.4
+  # text_mask_transform:
+  #   mask_ratio: 0.3
+  

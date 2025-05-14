@@ -1,0 +1,43 @@
+_target_: src.datamodules.mimiccxr_datamodule.MIMICCXRDataModule
+_recursive_: False # prevents that transformations are recursively created while instantiating the datamodule
+batch_size: 32 # much smaller than in the paper (512)
+num_workers: 16 # limited by workstation
+pin_memory: True
+text_model_name: 'emilyalsentzer/Bio_ClinicalBERT'
+mimic_cxr_dataset_file: '/vol/miltank/projects/practical_WS2425/vision_language/data/mimic_cxr_resized/mimic_cxr_preprocessed.pkl'
+train_val_split: [-1, 5000] # Paper uses 5000 for validation
+n_sentences: 1
+seed: 42 #${seed}
+
+# Masking transformations
+img_mask_transform:
+  _target_: src.datamodules.components.masking_transforms.ImageMaskingTransform
+  patch_size: 32  # Size of each patch to mask
+  mask_ratio: 0.3  # Fraction of the image to mask. Paper uses 0.6 but not in medical domain
+
+text_mask_transform:
+  _target_: src.datamodules.components.masking_transforms.TextMaskingTransform
+  mask_ratio: 0.3  # Fraction of the text to mask
+
+transform_list:
+  # Original augmentation from Maskvlm paper for pretraining
+  # Order is important!
+  - _target_: torchvision.transforms.ToTensor # Convert PIL Image to tensor
+  - _target_: torchvision.transforms.RandomResizedCrop
+    size: 224
+    ratio: [0.9, 1.0]
+  - _target_: torchvision.transforms.RandomAffine
+    degrees: [-10, 10]
+    translate: [0.1, 0.1]
+    scale: [0.95, 1.05]
+  - _target_: torchvision.transforms.ColorJitter
+    contrast: [0.9, 1.1]
+    brightness: [0.9, 1.1]
+  - _target_: torchvision.transforms.GaussianBlur
+    kernel_size: 3
+    sigma: [0.1, 1.0]
+  - _target_: torchvision.transforms.Resize
+    size: [224, 224]
+  - _target_: torchvision.transforms.Normalize
+    mean: [0.398, 0.398, 0.398]
+    std: [0.327, 0.327, 0.327]

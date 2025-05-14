@@ -1,0 +1,48 @@
+_target_: src.models.nlmcxr_module.NLMCXRLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+  weight_decay: 0.000001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.5
+  patience: 5
+
+criterion:
+  _target_: src.models.criterion.ConVIRTContrastiveCriterion
+  temperature: 0.1
+  lamda: 0.75
+
+model:
+  _target_: src.models.nlmcxr_model.NLMCXR
+  convirt_net:
+    _target_: src.models.convirt_model.ConVIRT
+    image_model:
+      _target_: src.models.image_encoder.VitImageEncoder
+      name: google/vit-base-patch16-224
+    image_projector:
+      # dimensions must math the output of the image_model
+      _target_: src.models.projection.Projector
+      in_dim: 768
+      hidden_size: 768
+      out_dim: ${proj_dim_size}
+    text_model:
+      _target_: src.models.text_encoder.TextEncoder
+      name: 'emilyalsentzer/Bio_ClinicalBERT'
+    text_projector:
+      # dimensions must math the output of the text_model
+      _target_: src.models.projection.Projector
+      in_dim: 768
+      hidden_size: 768
+      out_dim: ${proj_dim_size}
+  convirt_criterion:
+    _target_: src.models.criterion.ConVIRTContrastiveCriterion
+    temperature: 0.1
+    lamda: 0.75
+  freeze_backbone: True
+  checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_vit_32/checkpoints/epoch_067.ckpt'

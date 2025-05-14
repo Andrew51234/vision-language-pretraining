@@ -1,0 +1,46 @@
+_target_: src.models.convirt_module.ConVIRTLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+  weight_decay: 0.000001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.5
+  patience: 5
+
+# Trainer must be defined first in defaults
+# used for the scheduler and must match the trainer's val_check_interval
+val_check_interval: ${trainer.val_check_interval}
+
+net:
+  _target_: src.models.convirt_model.ConVIRT
+  image_model:
+    _target_: src.models.image_encoder.ImageEncoder
+    name: resnet50
+    weights: 'IMAGENET1K_V2'
+  image_projector:
+    # dimensions must math the output of the image_model
+    _target_: src.models.projection.Projector
+    in_dim: 2048
+    hidden_size: 1024
+    out_dim: ${proj_dim_size}
+  text_model:
+    _target_: src.models.text_encoder.TextEncoder
+    name: 'emilyalsentzer/Bio_ClinicalBERT'
+  text_projector:
+    # dimensions must math the output of the text_model
+    _target_: src.models.projection.Projector
+    in_dim: 768
+    hidden_size: 768
+    out_dim: ${proj_dim_size}
+
+criterion:
+  _target_: src.models.criterion.ConVIRTContrastiveCriterion
+  temperature: 0.1
+  lamda: 0.75
+  

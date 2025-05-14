@@ -1,0 +1,14 @@
+defaults:
+  - _self_
+  - paths: mimic_cxr_preprocess.yaml
+
+nlp:
+  language: en
+  processors: tokenize
+
+preprocessing:
+  resize_shape: 256
+  min_sentence_words: 3
+
+parallel:
+  progress_bar: true

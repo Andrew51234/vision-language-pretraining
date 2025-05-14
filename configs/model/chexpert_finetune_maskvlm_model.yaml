@@ -1,0 +1,27 @@
+_target_: src.models.chexpert_module.CheXpertLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.000001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.75
+  patience: 10
+
+criterion:
+  _target_: torch.nn.modules.loss.BCELoss
+  reduction: 'mean'
+
+model:
+  _target_: src.models.chexpert_model.MaskVLMCheXpert
+  image_model:
+    _target_: src.models.image_encoder.MaskVLMImageEncoder
+    name: google/vit-base-patch16-224
+  freeze_backbone: True
+  checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/maskvlm_03/checkpoints/last.pth'
+  

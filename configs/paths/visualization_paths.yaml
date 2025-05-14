@@ -1,0 +1,6 @@
+project_dir: /vol/miltank/projects/practical_WS2425/vision_language/data
+visualization_dir: ${paths.project_dir}/visualizations
+data_dir: ${paths.project_dir}/interims
+checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_resnet_32/checkpoints/last.ckpt'
+root_dir: ${oc.env:PROJECT_ROOT}
+log_dir: ${paths.root_dir}/logs/

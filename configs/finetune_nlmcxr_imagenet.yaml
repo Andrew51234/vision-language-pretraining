@@ -1,0 +1,43 @@
+# @package _global_
+
+# specify here default configuration
+# order of defaults determines the order in which configs override each other
+defaults:
+  - _self_
+  - datamodule: nlmcxr.yaml
+  - model: nlmcxr_finetune_model.yaml
+  - callbacks: nlmcxr_finetune_callbacks.yaml
+  - logger: wandb # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - trainer: nlmcxr_finetune_trainer.yaml
+  - paths: nlmcxr_finetune_paths.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+  - debug: null
+
+model:
+  model:
+    convirt_net:
+      image_model:
+        weights: 'IMAGENET1K_V2'
+    checkpoint_path: ''
+
+# task name, determines output directory path
+task_name: "nlmcxr_finetune_imagenet"
+
+# set False to skip model training
+train: True
+
+# dimensions of the projection layer
+proj_dim_size: 512
+
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on the metric specified in checkpoint callback
+test: True
+
+# simply provide checkpoint path to resume training
+ckpt_path: null
+
+# seed for imagenet number generators in pytorch, numpy and python.imagenet
+seed: 42
+
+tags: ['dev']

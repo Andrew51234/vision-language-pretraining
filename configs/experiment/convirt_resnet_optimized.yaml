@@ -1,0 +1,56 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+task_name: "convirt_resnet_optimized"
+train: True
+test: False
+seed: 42
+
+logger:
+  wandb:
+    project: "pretraining"
+    entity: "adlm-vision-language"
+    name: "convirt_resnet_3_sentences"
+    tags:
+      - "pretraining"
+      - "mimic_cxr"
+      - "resnet"
+      # - "test"
+      - "convirt"
+    notes: "Convirt pretraining with adapted augmentation"
+
+trainer:
+  val_check_interval: 625 # connected to batch size
+  gradient_clip_val: 20.0
+
+datamodule:
+  batch_size: 256
+  n_sentences: 3
+  transform_list:
+    # Adapted augmentation
+    # Order is important!
+    - _target_: torchvision.transforms.ToTensor # Convert PIL Image to tensor
+    - _target_: torchvision.transforms.RandomResizedCrop
+      size: 224
+      ratio: [0.8, 1.0]
+    - _target_: torchvision.transforms.RandomAffine
+      degrees: [-15, 15]
+      translate: [0.1, 0.1]
+      scale: [0.95, 1.05]
+    # There is a bug in torchvision when initializing ColorJitter with hydra. See https://github.com/pytorch/vision/issues/5646
+    # we have to add it manually in mimiccxr_datamodule.py
+    - _target_: torchvision.transforms.ColorJitter
+      contrast: [0.8, 1.2]
+      brightness: [0.8, 1.2]  
+    - _target_: torchvision.transforms.GaussianBlur
+      kernel_size: 3
+      sigma: [0.1, 2.0]
+    # - _target_: torchvision.transforms.RandomHorizontalFlip
+    #   p: 0.5      
+    - _target_: torchvision.transforms.Resize
+      size: [224, 224]
+    - _target_: torchvision.transforms.Normalize
+      mean: [0.398, 0.398, 0.398]
+      std: [0.327, 0.327, 0.327]

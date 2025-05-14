@@ -1,0 +1,22 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+task_name: "convirt_default"
+train: True
+test: False
+seed: 42
+
+logger:
+  wandb:
+    project: "pretraining"
+    entity: "adlm-vision-language"
+    name: "convirt_default"
+    tags:
+      - "pretraining"
+      - "mimic_cxr"
+      - "default"
+      # - "test"
+      - "convirt"
+    notes: "Convirt pretraining with default configuration but independent train and val datasets"

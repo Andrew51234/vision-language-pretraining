@@ -1,0 +1,5 @@
+gradient_monitor:
+  _target_: src.callbacks.gradient_monitor_callback.GradientMonitorCallback
+  names:
+    - "image_model"
+    - "text_model"

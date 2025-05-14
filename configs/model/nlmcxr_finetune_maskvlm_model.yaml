@@ -1,0 +1,66 @@
+_target_: src.models.nlmcxr_module.NLMCXRLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+  weight_decay: 0.000001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.5
+  patience: 5
+
+criterion:
+  _target_: src.models.criterion.ConVIRTContrastiveCriterion
+  temperature: 0.1
+  lamda: 0.75
+
+model:
+  _target_: src.models.nlmcxr_model.MaskVLMNLMCXR
+  maskvlm_net:
+    _target_: src.models.maskvlm_model.MaskVLM
+    image_model:
+      _target_: src.models.image_encoder.MaskVLMImageEncoder
+      name: google/vit-base-patch16-224
+    text_model:
+      _target_: src.models.text_encoder.MVLMTextEncoder
+      name: 'emilyalsentzer/Bio_ClinicalBERT'
+      num_layers_to_freeze: 0
+    itc_head:
+      _target_: src.models.projection.ITCHead
+      img_hidden_size: 768
+      text_hidden_size: 768
+      projection_size: ${proj_dim_size}
+    itm_head:
+      _target_: src.models.projection.ITMHead
+      hidden_size: 768 # only works if text and image model have same hidden size
+    img_cross_encoder:
+      _target_: src.models.components.cross_modality.ImgCrossModalityEncoder
+      hidden_dim: 768
+      num_heads: 4 # TODO no information in the paper
+      num_layers: 3
+    txt_cross_encoder:
+      _target_: src.models.components.cross_modality.TxtCrossModalityEncoder
+      hidden_dim: 768
+      num_heads: 4 # TODO no information in the paper
+      num_layers: 3
+    img_cross_decoder:
+      _target_: src.models.components.cross_modality.ImgCrossModalityDecoder
+      hidden_dim: 768
+      num_heads: 4 # TODO no information in the paper
+      num_layers: 3
+      patch_size: ${image_patch_size}
+      channels: 3
+    txt_classifier:
+      _target_: src.models.components.txt_decoder.TextTokenClassifier
+      hidden_dim: 768
+      vocab_size: 30522 # TODO: Check if this is correct
+  itc_loss: 
+    _target_: src.models.criterion.ITCLoss
+    lamda: 0.5
+    temperature: 0.07
+  freeze_backbone: True
+  checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/maskvlm_default/checkpoints/epoch_028.ckpt'

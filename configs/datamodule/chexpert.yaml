@@ -1,0 +1,12 @@
+_target_: src.datamodules.chexpert_datamodule.CheXpertDataModule
+batch_size: 256
+num_workers: 24
+pin_memory: True
+policy: 'one'
+train_fname: '/vol/miltank/projects/practical_WS2425/vision_language/data/CheXpert-v1.0-small/train.csv'
+val_fname: '/vol/miltank/projects/practical_WS2425/vision_language/data/CheXpert-v1.0-small/valid.csv'
+test_fname: ''
+train_val_split: [0.9775,0.0225]
+normalize_mean_values: [0.398,0.398,0.398] #Mimic-cxr
+normalize_std_values: [0.327, 0.327, 0.327] #Mimic-cxr
+seed: ${seed}

@@ -1,0 +1,45 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+# defaults copied from pretraining.yaml and overridden here
+defaults:
+  - override /datamodule: chexpert.yaml
+  - override /model: chexpert_finetune_model.yaml
+  - override /callbacks: chexpert_finetune_callbacks.yaml
+  - override /logger: wandb
+  - override /trainer: chexpert_finetune_trainer.yaml
+  - override /paths: chexpert_finetune_paths.yaml
+  - override /hydra: default.yaml
+  - override /extras: default.yaml
+  - override /debug: null
+
+task_name: "chexpert_subset_10_finetune_convirt_resnet_3_sentences"
+train: True
+test: False
+seed: 42
+
+datamodule: 
+  subset_percentage: 0.1 # 10% of the data
+
+model:
+  model:
+    checkpoint_path: '/vol/miltank/projects/practical_WS2425/vision_language/models/convirt_resnet_3_sentences/checkpoints/best.pth'
+
+logger:
+  wandb:
+    project: "finetuning"
+    entity: "adlm-vision-language"
+    name: ${task_name}
+    tags:
+      - "finetuning"
+      - "chexpert"
+      - "subset_10"
+      - "convirt_resnet_256"
+      # - "test"
+    notes: "Convirt model trained with 3 sentences CheXpert finetuning"
+
+# trainer:
+#   max_epochs: 10
+#   val_check_interval: 1000

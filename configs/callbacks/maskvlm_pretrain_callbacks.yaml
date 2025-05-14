@@ -1,0 +1,31 @@
+defaults:
+  - model_checkpoint.yaml
+  # - early_stopping.yaml
+  - model_summary.yaml
+  - rich_progress_bar.yaml
+  - learning_rate_monitor.yaml
+  - gradient_monitor.yaml
+  - maskvlm_logging_callback.yaml
+  - _self_
+
+model_checkpoint:
+  dirpath: ${paths.output_dir}/checkpoints
+  filename: "epoch_{epoch:03d}"
+  monitor: "val/loss"
+  mode: "min"
+  save_last: True
+  auto_insert_metric_name: False
+
+model_summary:
+  max_depth: -1
+
+gradient_monitor:
+  names:
+    - "image_model"
+    - "text_model"
+    - "itc_head"
+    - "itm_head"
+    - "img_cross_encoder"
+    - "txt_cross_encoder"
+    - "img_cross_decoder"
+    - "txt_classifier"
